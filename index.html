@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Virtual Estimates Now</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Link to PWA Manifest -->
+  <link rel="manifest" href="/pwa/manifest.json">
+  
+  <!-- Favicon and Icons -->
+  <link rel="icon" href="/pwa/assets/img/icon-192x192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/pwa/assets/img/icon-192x192.png">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/pwa/assets/css/style.css">
+  
+  <!-- Meta Tags for PWA -->
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Virtual Estimates Now provides instant virtual estimates for your projects.">
+  
+  <!-- Optional: Include Google Fonts or other external resources -->
+  <!-- Example: -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"> -->
+</head>
+<body>
+  
+  <!-- Header with Navigation Links -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/pwa/index.html">Home</a></li>
+        <li><a href="/pwa/features.html">Features</a></li>
+        <li><a href="/pwa/about.html">About Us</a></li>
+        <li><a href="/pwa/contact.html">Contact</a></li>
+        <li><a href="/pwa/signin.html">Sign In</a></li>
+        <li><a href="/pwa/signup.html">Create Account</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <!-- Main Content -->
+  <main>
+    <h1>Welcome to Virtual Estimates Now</h1>
+    <p>Get instant virtual estimates for your flooring projects with ease!</p>
+    
+    <!-- Example Content Sections -->
+    <section id="features">
+      <h2>Features</h2>
+      <ul>
+        <li>Instant Estimates</li>
+        <li>User-Friendly Interface</li>
+        <li>Secure Account Management</li>
+        <li>24/7 Support</li>
+      </ul>
+    </section>
+    
+    <section id="how-it-works">
+      <h2>How It Works</h2>
+      <p>Simply sign in or create an account to start receiving virtual estimates tailored to your needs.</p>
+    </section>
+    
+    <!-- Install PWA Button -->
+    <button id="installPWA" style="display: none;">Install App</button>
+  </main>
+  
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Flooring Install America</p>
+  </footer>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/pwa/service-worker.js', { scope: '/pwa/' })
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
+  
+  <!-- PWA Install Prompt Handling -->
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('installPWA');
+
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      deferredPrompt = e;
+      // Update UI notify the user they can install the PWA
+      installBtn.style.display = 'block';
+
+      installBtn.addEventListener('click', () => {
+        // Hide the install button
+        installBtn.style.display = 'none';
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    // Optionally, hide the install button if the app is already installed
+    window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
+      installBtn.style.display = 'none';
+    });
+  </script>
+  
+</body>
+</html>

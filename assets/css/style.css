@@ -1,0 +1,160 @@
+/* PWA Stylesheet */
+
+/* General Styles */
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-color: #ffffff;
+  color: #333;
+  text-rendering: optimizeLegibility;
+}
+
+/* Standalone Mode Adjustments */
+@media (display-mode: standalone) {
+  body {
+    margin: 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+  }
+
+  header {
+    display: none; /* Hide header if not needed */
+  }
+
+  footer {
+    display: none; /* Hide footer for more space */
+  }
+}
+
+/* Offline Page */
+.offline-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f4f4f4;
+  color: #6c757d;
+}
+
+.offline-message h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #007bff;
+}
+
+.offline-message p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.offline-message a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Loading Animation */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-overlay .spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #007bff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Touch-Friendly Styles */
+button, a {
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+button:hover, a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Accessibility */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: #0056b3;
+  outline: none;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  a {
+    color: #80a372;
+  }
+
+  .offline-message {
+    background-color: #1e1e1e;
+    color: #cccccc;
+  }
+
+  .offline-message h1 {
+    color: #80a372;
+  }
+
+  .offline-message a {
+    color: #4caf50;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+
+  button, a {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .offline-message h1 {
+    font-size: 1.8rem;
+  }
+
+  .offline-message p {
+    font-size: 1rem;
+  }
+}
