@@ -42,59 +42,29 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// FETCH: Serve cached files or fetch from network
+// FETCH: Intercept network requests
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') {
-    return; // Only handle GET requests
-  }
-
-  // Example: Network-first strategy for API requests within /pwa/api/
-  if (event.request.url.includes('/pwa/api/')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          // Clone and cache the response
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Default: Cache-first strategy for other /pwa/ requests
-  if (event.request.url.startsWith(self.location.origin + '/pwa/')) {
-    event.respondWith(
-      caches.match(event.request)
-        .then((cachedResponse) => {
+  event.respondWith(
+    // Try to fetch from the network first
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Optionally, update your cache with the new response here if desired
+        return networkResponse;
+      })
+      .catch(() => {
+        // If the network is unavailable, try to serve the asset from cache
+        return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
             return cachedResponse;
           }
-
-          return fetch(event.request)
-            .then((networkResponse) => {
-              // Cache the new resource if it's a basic GET request
-              if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                const responseClone = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, responseClone);
-                });
-              }
-              return networkResponse;
-            })
-            .catch(() => {
-              // Serve offline page for navigation requests within /pwa/ when offline
-              if (event.request.mode === 'navigate') {
-                return caches.match('/pwa/offline.html');
-              }
-            });
-        })
-    );
-  }
+          // If it's a navigation request and nothing is in the cache, serve offline.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('/pwa/offline.html');
+          }
+          // You can return a default response for other types of requests here if needed
+        });
+      })
+  );
 });
+
 
